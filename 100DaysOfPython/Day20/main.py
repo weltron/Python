@@ -1,4 +1,4 @@
-# A python program that implements the Snake game controled by the keyboard arrow keys.
+# A python program that implements the Snake game controled by the keyboard arrow  keys.
 
 from turtle import Turtle, Screen
 from snake import Snake
