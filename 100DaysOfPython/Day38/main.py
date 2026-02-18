@@ -17,23 +17,24 @@ headers = {
 
 # Make the API request to get exercise data
 response = requests.post(url=os.getenv("EXERCISE_ENDPOINT"), json=exercise_params, headers=headers)
-result = response.json()["exercises"][0]
+result = response.json()
 
 # Set up parameters and headers for the Sheety API request to log the workout
-sheety_params = {
-    "workout":{
-        "date": datetime.now().strftime("%x"),
-        "time": datetime.now().strftime("%X"),
-        "exercise": result["name"].title(),
-        "duration": result["duration_min"],
-        "calories": result["nf_calories"]
-    }
-}
-
 sheety_headers = {
     "Authorization": f"Bearer {os.getenv('SHEETY_BEARER')}"
 }
 
-# Make the API request to log the workout in Sheety
-sheety_response = requests.post(url=os.getenv("SHEET_ENDPOINT"), json=sheety_params, headers=sheety_headers)
-print(sheety_response.text)
+for exercise in result["exercises"]:
+    sheety_params = {
+        "workout":{
+            "date": datetime.now().strftime("%x"),
+            "time": datetime.now().strftime("%X"),
+            "exercise": exercise["name"].title(),
+            "duration": exercise["duration_min"],
+            "calories": exercise["nf_calories"]
+        }
+    }
+
+    # Make the API request to log the workout in Sheety
+    sheety_response = requests.post(url=os.getenv("SHEET_ENDPOINT"), json=sheety_params, headers=sheety_headers)
+    print(sheety_response.text)
